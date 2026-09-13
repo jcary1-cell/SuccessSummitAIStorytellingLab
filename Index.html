@@ -95,6 +95,12 @@
                 <span class="font-semibold text-indigo-200">NACE Badges Unlocked:</span>
                 <span id="badge-count" class="px-2 py-0.5 bg-indigo-600 text-white rounded-md font-bold text-[11px]">0 / 8</span>
             </button>
+
+            <!-- API Key Settings Button for GitHub Pages / Live Deployment -->
+            <button onclick="toggleApiKeyModal()" class="flex items-center gap-1.5 bg-slate-900/90 hover:bg-slate-800 border border-slate-700 px-3 py-2 rounded-xl text-xs transition text-slate-300">
+                <span>🔑</span>
+                <span class="font-semibold text-slate-200 hidden sm:inline">API Key</span>
+            </button>
         </div>
 
         <!-- Master Progress Step Nav -->
@@ -460,7 +466,7 @@
                         ✍️ Your Refined 60-Second Story (Final Polished Draft):
                     </label>
                     <p class="text-[11px] text-slate-400">Paste your updated, human-checked 60-second narrative here to prepare for peer pitch practice.</p>
-                    <textarea id="refined-story-input" rows="4" placeholder="Paste or type your final polished story here..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs sm:text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition"></textarea>
+                    <textarea id="refined-story-input" oninput="updateExportSummary()" rows="4" placeholder="Paste or type your final polished story here..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs sm:text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition"></textarea>
                 </div>
 
                 <!-- Next Step Button -->
@@ -550,13 +556,13 @@
                             <label class="block text-xs font-bold text-slate-300 mb-1">
                                 1. What human value/strength stood out most to your partner?
                             </label>
-                            <input type="text" id="feedback-strength" placeholder="e.g., Empathy under stress, quick adaptability..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                            <input type="text" id="feedback-strength" oninput="updateExportSummary()" placeholder="e.g., Empathy under stress, quick adaptability..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-300 mb-1">
                                 2. One tweak to make it sound even more conversational & authentic:
                             </label>
-                            <input type="text" id="feedback-tweak" placeholder="e.g., Use simpler phrasing in the middle section..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                            <input type="text" id="feedback-tweak" oninput="updateExportSummary()" placeholder="e.g., Use simpler phrasing in the middle section..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
                         </div>
                     </div>
                 </div>
@@ -677,6 +683,27 @@
         </div>
     </div>
 
+    <!-- API Key Settings Modal -->
+    <div id="api-key-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel max-w-md w-full rounded-2xl p-6 border border-slate-800 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">🔑 Gemini API Key Settings</h3>
+                <button onclick="toggleApiKeyModal()" class="text-slate-400 hover:text-white text-lg p-1">✕</button>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+                When hosting live on <strong>GitHub Pages</strong>, enter your free Google Gemini API key below to run real-time AI responses. If left blank, the app uses realistic interactive simulated responses automatically!
+            </p>
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Google Gemini API Key:</label>
+                <input type="password" id="user-api-key-input" placeholder="Paste AIzaSy... key here" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500 font-mono">
+            </div>
+            <div class="flex justify-between items-center pt-2 border-t border-slate-800">
+                <button onclick="clearApiKey()" class="text-xs text-red-400 hover:text-red-300 font-semibold">Clear Key</button>
+                <button onclick="saveApiKey()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold transition">Save & Close</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Notification Toast Container -->
     <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
@@ -692,6 +719,9 @@
         let isPitchTimerRunning = false;
         let currentPartnerRole = 'A'; // 'A' or 'B'
 
+        // User API Key configuration (Persisted in LocalStorage for GitHub Pages)
+        let savedApiKey = localStorage.getItem('gemini_api_key') || '';
+
         // NACE Competency Badges Tracker
         const naceCompetencies = {
             'Communication': { icon: '🗣️', description: 'Craft clear, compelling stories and practice active listening.', unlocked: false },
@@ -702,6 +732,15 @@
             'Teamwork': { icon: '🤝', description: 'Provide constructive feedback and support peer storytellers.', unlocked: false },
             'Leadership': { icon: '🦁', description: 'Inspire and connect through authentic self-advocacy.', unlocked: false },
             'Professionalism': { icon: '🛡️', description: 'Maintain ethical integrity and boundary setting with AI.', unlocked: false }
+        };
+
+        window.onload = function() {
+            renderNaceBadges();
+            updateStoryPreview();
+            updateExportSummary();
+            if (savedApiKey) {
+                document.getElementById('user-api-key-input').value = savedApiKey;
+            }
         };
 
         window.onload = function() {
@@ -851,7 +890,17 @@ Audit this story for accessibility, equity, and clarity. Does this narrative mak
             const promptText = document.getElementById(`prompt-text-${promptNum}`).innerText;
             const systemPrompt = "You are an empathetic, world-class career mentor helping college students craft authentic, human-centered stories without corporate jargon.";
 
-            const apiKey = ""; // Canvas runtime key resolution
+            const apiKey = savedApiKey.trim();
+
+            if (!apiKey) {
+                // Return immediate structured simulation when no API key is provided
+                setTimeout(() => {
+                    outputContent.innerText = `[Simulated Thought Partner Response for Workshop]\n\nGreat start! Here is feedback on your prompt stage ${promptNum}:\n1. Human Purpose: Your core motivation comes through clearly.\n2. Key Follow-up: What was the exact moment you realized your initial approach needed to adapt?\n\n(Tip: Click "🔑 API Key" in the top header to enter your Gemini API Key for live AI queries on GitHub Pages!)`;
+                    showToast('Using interactive simulated thought partner output.');
+                }, 600);
+                return;
+            }
+
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
 
             const payload = {
@@ -866,73 +915,47 @@ Audit this story for accessibility, equity, and clarity. Does this narrative mak
                     body: JSON.stringify(payload)
                 });
 
-                if (!response.ok) throw new Error('API Request Failed');
+                if (!response.ok) throw new Error(`API Error ${response.status}`);
 
                 const result = await response.json();
                 const aiText = result.candidates?.[0]?.content?.parts?.[0]?.text;
 
                 if (aiText) {
                     outputContent.innerText = aiText;
-                    showToast('✨ Gemini response loaded!');
+                    showToast('✨ Live Gemini AI response generated!');
                 } else {
-                    outputContent.innerText = "Received empty response. Try copying the prompt into your preferred AI tool!";
+                    outputContent.innerText = "Received empty response. Check your API key or try again!";
                 }
             } catch (err) {
-                outputContent.innerText = `[Simulated Sounding Board Response for Workshop]\n\n"Great start! To make your story stand out:\n1. Why did this specific problem matter to you personally?\n2. What was the exact moment you realized your initial approach needed to adapt?"\n\n(Tip: Copy the prompt above directly into ChatGPT, Claude, or Gemini!)`;
-                showToast('Using simulated thought partner output.');
+                outputContent.innerText = `[API Call Failed: ${err.message}]\n\nFallback simulated response loaded:\n"Focus on your personal 'why'. Why did solving this specific problem matter to you and those around you?"`;
+                showToast('API call failed. Check key in settings.');
             }
         }
 
-        function copyAiOutput() {
-            const text = document.getElementById('ai-output-content').innerText;
-            copyToClipboardText(text);
-            showToast('📋 AI Suggestion copied!');
+        function toggleApiKeyModal() {
+            const modal = document.getElementById('api-key-modal');
+            modal.classList.toggle('hidden');
         }
 
-        function togglePitchTimer() {
-            const btn = document.getElementById('btn-pitch-timer-toggle');
-            if (isPitchTimerRunning) {
-                clearInterval(pitchTimerInterval);
-                isPitchTimerRunning = false;
-                btn.innerHTML = '▶ Resume Pitch';
+        function saveApiKey() {
+            const val = document.getElementById('user-api-key-input').value.trim();
+            savedApiKey = val;
+            if (val) {
+                localStorage.setItem('gemini_api_key', val);
+                showToast('🔑 API key saved for this session!');
             } else {
-                isPitchTimerRunning = true;
-                btn.innerHTML = '⏸ Pause Pitch';
-                pitchTimerInterval = setInterval(() => {
-                    if (pitchTimerSeconds > 0) {
-                        pitchTimerSeconds--;
-                        updatePitchTimerDisplay();
-                    } else {
-                        clearInterval(pitchTimerInterval);
-                        isPitchTimerRunning = false;
-                        btn.innerHTML = '▶ Start Pitch';
-                        showToast('🔔 Time up! Switch to 1-minute peer feedback now!');
-                    }
-                }, 1000);
+                localStorage.removeItem('gemini_api_key');
+                showToast('Cleared API key. Using simulated responses.');
             }
+            toggleApiKeyModal();
         }
 
-        function resetPitchTimer() {
-            clearInterval(pitchTimerInterval);
-            isPitchTimerRunning = false;
-            pitchTimerSeconds = 60;
-            document.getElementById('btn-pitch-timer-toggle').innerHTML = '▶ Start Pitch';
-            updatePitchTimerDisplay();
-        }
-
-        function updatePitchTimerDisplay() {
-            const mins = Math.floor(pitchTimerSeconds / 60);
-            const secs = pitchTimerSeconds % 60;
-            document.getElementById('pitch-timer-display').innerText = 
-                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-        }
-
-        function togglePartnerRole() {
-            currentPartnerRole = currentPartnerRole === 'A' ? 'B' : 'A';
-            document.getElementById('current-partner-role').innerText = 
-                `Current Mode: Partner ${currentPartnerRole} ${currentPartnerRole === 'A' ? 'Pitching' : 'Feedback'}`;
-            resetPitchTimer();
-            showToast(`Switched to Partner ${currentPartnerRole}`);
+        function clearApiKey() {
+            document.getElementById('user-api-key-input').value = '';
+            savedApiKey = '';
+            localStorage.removeItem('gemini_api_key');
+            showToast('API Key removed.');
+            toggleApiKeyModal();
         }
 
         function updateExportSummary() {
@@ -943,6 +966,7 @@ Audit this story for accessibility, equity, and clarity. Does this narrative mak
             const impact = document.getElementById('input-impact').value.trim() || '[Impact missing]';
             const refinedStory = document.getElementById('refined-story-input').value.trim() || '[Refined Story Draft pending...]';
             const strength = document.getElementById('feedback-strength').value.trim() || '[Partner feedback pending]';
+            const tweak = document.getElementById('feedback-tweak').value.trim() || '[Partner tweak suggestion pending]';
 
             const summary = 
 `====================================================================
@@ -969,6 +993,7 @@ ${refinedStory}
 3. PEER CONNECTION FEEDBACK
 --------------------------------------------------------------------
 • Core Human Strength Heard by Partner: ${strength}
+• Suggested Tweak for Authenticity: ${tweak}
 
 4. THE HUMAN STORYTELLER'S PLEDGE
 --------------------------------------------------------------------
