@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storytelling Lab: Human Purpose Meets Ethical AI</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        },
+                        accent: {
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-accent {
+            box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.3);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 25px -5px rgba(34, 197, 94, 0.3);
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body class="h-full flex flex-col bg-slate-950 text-slate-100 overflow-x-hidden selection:bg-indigo-500 selection:text-white">
+
+    <!-- Top Header & Global Timer Bar -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
+            
+            <!-- Branding & Title -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-emerald-500 flex items-center justify-center font-black text-xl text-white shadow-lg">
+                    SL
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">
+                        Storytelling Lab
+                    </h1>
+                    <p class="text-xs text-slate-400">Human Purpose Meets Ethical AI • 60-Min Interactive Masterclass</p>
+                </div>
+            </div>
+
+            <!-- Master Timer & Controls -->
+            <div class="flex items-center gap-4 bg-slate-900/90 border border-slate-800 px-4 py-2 rounded-xl">
+                <div class="flex flex-col items-end">
+                    <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Workshop Time</span>
+                    <span id="workshop-timer-display" class="font-mono text-lg font-bold text-emerald-400">60:00</span>
+                </div>
+                <button id="btn-toggle-timer" onclick="toggleWorkshopTimer()" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition text-xs font-semibold">
+                    ▶ Play
+                </button>
+                <button onclick="resetWorkshopTimer()" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-lg transition text-xs">
+                    ↺
+                </button>
+            </div>
+
+            <!-- NACE Competency Badges Summary Pill -->
+            <button onclick="toggleNaceModal()" class="flex items-center gap-2 bg-indigo-950/60 hover:bg-indigo-900/60 border border-indigo-700/50 px-3.5 py-2 rounded-xl text-xs transition">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="font-semibold text-indigo-200">NACE Badges Unlocked:</span>
+                <span id="badge-count" class="px-2 py-0.5 bg-indigo-600 text-white rounded-md font-bold text-[11px]">0 / 8</span>
+            </button>
+        </div>
+
+        <!-- Master Progress Step Nav -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-800/60 overflow-x-auto">
+            <nav class="flex space-x-1 sm:space-x-2 py-2 min-w-max" id="workshop-nav">
+                <button onclick="switchStep(1)" id="nav-btn-1" class="step-nav-btn active flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition bg-indigo-600 text-white">
+                    <span class="w-5 h-5 rounded-full bg-indigo-800 flex items-center justify-center text-[10px]">1</span>
+                    <span>1. Human Core</span>
+                    <span class="text-[10px] opacity-75">(10m)</span>
+                </button>
+                <button onclick="switchStep(2)" id="nav-btn-2" class="step-nav-btn flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition">
+                    <span class="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">2</span>
+                    <span>2. Blueprint</span>
+                    <span class="text-[10px] opacity-75">(12m)</span>
+                </button>
+                <button onclick="switchStep(3)" id="nav-btn-3" class="step-nav-btn flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition">
+                    <span class="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">3</span>
+                    <span>3. AI Co-Creation Lab</span>
+                    <span class="text-[10px] opacity-75">(16m)</span>
+                </button>
+                <button onclick="switchStep(4)" id="nav-btn-4" class="step-nav-btn flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition">
+                    <span class="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">4</span>
+                    <span>4. Peer Pitch & Feedback</span>
+                    <span class="text-[10px] opacity-75">(12m)</span>
+                </button>
+                <button onclick="switchStep(5)" id="nav-btn-5" class="step-nav-btn flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition">
+                    <span class="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">5</span>
+                    <span>5. Pledge & Export</span>
+                    <span class="text-[10px] opacity-75">(10m)</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Interactive Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ========================================== -->
+        <!-- PART 1: THE HUMAN CORE IN AN AI WORLD -->
+        <!-- ========================================== -->
+        <section id="step-1" class="step-section space-y-6">
+            <div class="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800 glow-accent">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <div>
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-950 text-indigo-300 border border-indigo-800">
+                            Part 1 • Minutes 00:00 - 10:00
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-2">The Human Core in an AI World</h2>
+                        <p class="text-sm text-slate-400 mt-1">Discover why AI creates text, but humans build trust, empathy, and conviction.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="nace-tag" title="NACE Competency">🛡️ Professionalism</span>
+                        <span class="nace-tag" title="NACE Competency">⚡ Technology</span>
+                    </div>
+                </div>
+
+                <!-- Live Experiment Hook Card -->
+                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 mb-6">
+                    <div class="flex items-center gap-2 text-amber-400 font-semibold text-sm mb-3">
+                        <span>🧪 Facilitator Hook: The 30-Second Pitch Comparison</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-300 mb-4">
+                        Read both elevator pitch samples below. Which story makes you actually want to hire or partner with this student?
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Pitch A (Generic AI) -->
+                        <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-4 flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs font-bold text-red-400 uppercase tracking-wider">Sample A (Pure AI Generator)</span>
+                                    <span class="text-[10px] bg-red-950 text-red-300 px-2 py-0.5 rounded">Generic AI</span>
+                                </div>
+                                <p class="text-xs text-slate-300 italic leading-relaxed">
+                                    "I am a highly motivated, results-oriented computer science major passionate about leveraging cutting-edge synergies to drive high-impact solutions. I spearheaded a multifaceted project optimizing cross-functional workflow efficiency, serving as a testament to my dedication and transformative innovation."
+                                </p>
+                            </div>
+                            <button onclick="votePitch('A')" class="mt-4 w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-medium transition border border-slate-700">
+                                Select Sample A
+                            </button>
+                        </div>
+
+                        <!-- Pitch B (Human Core) -->
+                        <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-4 flex flex-col justify-between border-indigo-900/50">
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Sample B (Human-Centered Purpose)</span>
+                                    <span class="text-[10px] bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded">Human Core</span>
+                                </div>
+                                <p class="text-xs text-slate-300 italic leading-relaxed">
+                                    "When our student team's campus tutoring database crashed two days before midterms, I saw how stressed freshman students were getting. I spent the night restructuring our database queries—not just to fix the code, but because I cared about keeping tutoring accessible when my peers needed it most."
+                                </p>
+                            </div>
+                            <button onclick="votePitch('B')" class="mt-4 w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-medium transition shadow-md">
+                                Select Sample B
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Live Poll Result View -->
+                    <div id="poll-result" class="hidden mt-4 p-4 bg-indigo-950/40 border border-indigo-800/60 rounded-xl text-xs text-indigo-200">
+                        <div class="flex items-center gap-2 font-bold text-emerald-400 mb-1">
+                            <span>✅ Insights Unlocked!</span>
+                        </div>
+                        <p>
+                            <strong class="text-white">Why Sample B Wins:</strong> It demonstrates <em>Purpose</em> (helping stressed peers), <em>Struggle</em> (database crash under time pressure), and <em>Human Problem Solving</em>. Sample A uses corporate AI buzzwords ("synergies", "spearheaded", "testament") that mask your real human effort.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Core Takeaway Banner -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl">
+                        <div class="text-indigo-400 text-lg mb-1">💡 Core Principle</div>
+                        <h4 class="font-bold text-sm text-white">AI Creates Text; Humans Create Trust</h4>
+                        <p class="text-xs text-slate-400 mt-1">Recruiters and collaborators remember emotional resonance and problem-solving, not polished jargon.</p>
+                    </div>
+                    <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl">
+                        <div class="text-indigo-400 text-lg mb-1">🎯 The NACE Balance</div>
+                        <h4 class="font-bold text-sm text-white">Technology + Professionalism</h4>
+                        <p class="text-xs text-slate-400 mt-1">Technology makes us efficient, but human core values make us memorable and authentic.</p>
+                    </div>
+                    <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl">
+                        <div class="text-indigo-400 text-lg mb-1">🚀 Lab Action</div>
+                        <h4 class="font-bold text-sm text-white">Human First, AI Second</h4>
+                        <p class="text-xs text-slate-400 mt-1">Extract your raw human truth first before opening any AI prompt editor.</p>
+                    </div>
+                </div>
+
+                <!-- Next Step Button -->
+                <div class="flex justify-between items-center pt-4 border-t border-slate-800">
+                    <span class="text-xs text-slate-400">Step 1 of 5 Completed</span>
+                    <button onclick="unlockBadge('Professionalism'); unlockBadge('Technology'); switchStep(2);" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition flex items-center gap-2">
+                        <span>Continue to Step 2: Story Blueprint</span> →
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- PART 2: THE "HUMAN PURPOSE" NARRATIVE BLUEPRINT -->
+        <!-- ========================================== -->
+        <section id="step-2" class="step-section hidden space-y-6">
+            <div class="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <div>
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-950 text-indigo-300 border border-indigo-800">
+                            Part 2 • Minutes 10:00 - 22:00
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-2">The "Human Purpose" Narrative Blueprint</h2>
+                        <p class="text-sm text-slate-400 mt-1">Use the <strong>P-S-I Framework</strong> (Purpose, Struggle, Impact) to capture your authentic story.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="nace-tag">🌱 Career & Self-Dev</span>
+                        <span class="nace-tag">🧠 Critical Thinking</span>
+                    </div>
+                </div>
+
+                <!-- Interactive Blueprint Worksheet Form -->
+                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 sm:p-6 space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                            Choose Your Story Topic:
+                        </label>
+                        <select id="story-topic" onchange="updateStoryPreview()" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+                            <option value="class_project">Class / Research Project</option>
+                            <option value="student_org">Student Club / Leadership Challenge</option>
+                            <option value="work_internship">Internship or Work Experience</option>
+                            <option value="community_impact">Community / Personal Initiative</option>
+                        </select>
+                    </div>
+
+                    <!-- P - Purpose -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label for="input-purpose" class="text-sm font-bold text-emerald-400 flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-emerald-950 border border-emerald-700 text-emerald-400 text-xs flex items-center justify-center font-bold">P</span>
+                                1. PURPOSE (The "Why")
+                            </label>
+                            <span class="text-[11px] text-slate-400">What cared-about problem were you trying to solve?</span>
+                        </div>
+                        <textarea id="input-purpose" oninput="updateStoryPreview()" rows="3" placeholder="e.g., I wanted to make sure first-year commuter students felt connected to campus resources, because many were dropping out due to isolation..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs sm:text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition"></textarea>
+                    </div>
+
+                    <!-- S - Struggle -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label for="input-struggle" class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-amber-950 border border-amber-700 text-amber-400 text-xs flex items-center justify-center font-bold">S</span>
+                                2. STRUGGLE (The Human Factor)
+                            </label>
+                            <span class="text-[11px] text-slate-400">What felt hard, failed, or required creative adaptability?</span>
+                        </div>
+                        <textarea id="input-struggle" oninput="updateStoryPreview()" rows="3" placeholder="e.g., Our initial event only had 3 people show up. We realized our social media announcements weren't reaching them, so I had to personally interview students in the cafeteria to learn how they actually communicate..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs sm:text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition"></textarea>
+                    </div>
+
+                    <!-- I - Impact -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label for="input-impact" class="text-sm font-bold text-indigo-400 flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-indigo-950 border border-indigo-700 text-indigo-400 text-xs flex items-center justify-center font-bold">I</span>
+                                3. IMPACT (The Connection & Growth)
+                            </label>
+                            <span class="text-[11px] text-slate-400">How did this help others, and how did it change your perspective?</span>
+                        </div>
+                        <textarea id="input-impact" oninput="updateStoryPreview()" rows="3" placeholder="e.g., We pivoted to a Discord hub & peer-mentoring program that grew to 150+ active members. It taught me that real empathy means listening before building solutions." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs sm:text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition"></textarea>
+                    </div>
+                </div>
+
+                <!-- Compiled Blueprint Live Summary Card -->
+                <div class="bg-indigo-950/30 border border-indigo-800/50 rounded-xl p-4">
+                    <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider mb-2">📋 Live Raw Story Blueprint Draft</h4>
+                    <div id="blueprint-live-preview" class="text-xs text-slate-300 space-y-1 italic">
+                        <p class="text-slate-500">Start typing your P-S-I details above to see your blueprint compile here...</p>
+                    </div>
+                </div>
+
+                <!-- Next Step Button -->
+                <div class="flex justify-between items-center pt-4 border-t border-slate-800">
+                    <button onclick="switchStep(1)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">
+                        ← Back to Part 1
+                    </button>
+                    <button onclick="unlockBadge('Career & Self-Development'); unlockBadge('Critical Thinking'); switchStep(3);" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition flex items-center gap-2">
+                        <span>Continue to Step 3: AI Lab Prompts</span> →
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- PART 3: THE AI CO-CREATION LAB -->
+        <!-- ========================================== -->
+        <section id="step-3" class="step-section hidden space-y-6">
+            <div class="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <div>
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-950 text-indigo-300 border border-indigo-800">
+                            Part 3 • Minutes 22:00 - 38:00
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-2">The AI Co-Creation Lab</h2>
+                        <p class="text-sm text-slate-400 mt-1">Use AI as a <strong>Thought Partner & Sounding Board</strong>, not a ghostwriter.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="nace-tag">⚡ Technology</span>
+                        <span class="nace-tag">🧠 Critical Thinking</span>
+                        <span class="nace-tag">🌐 Equity & Inclusion</span>
+                    </div>
+                </div>
+
+                <!-- The 3 Golden Rules Accordion / Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+                    <div class="bg-slate-900/80 border border-slate-800 p-3.5 rounded-xl">
+                        <span class="text-xs font-bold text-indigo-400">Rule #1</span>
+                        <h4 class="text-xs font-bold text-white mt-0.5">Human First, AI Second</h4>
+                        <p class="text-[11px] text-slate-400 mt-1">Never ask AI to write from scratch. Supply your raw human P-S-I facts first.</p>
+                    </div>
+                    <div class="bg-slate-900/80 border border-slate-800 p-3.5 rounded-xl">
+                        <span class="text-xs font-bold text-amber-400">Rule #2</span>
+                        <h4 class="text-xs font-bold text-white mt-0.5">Don't Delegate Your Voice</h4>
+                        <p class="text-[11px] text-slate-400 mt-1">Use AI to structure and ask questions, not to swap in generic corporate buzzwords.</p>
+                    </div>
+                    <div class="bg-slate-900/80 border border-slate-800 p-3.5 rounded-xl">
+                        <span class="text-xs font-bold text-emerald-400">Rule #3</span>
+                        <h4 class="text-xs font-bold text-white mt-0.5">Audit for Inclusion & Truth</h4>
+                        <p class="text-[11px] text-slate-400 mt-1">Verify that your story is clear to non-experts and free from artificial embellishments.</p>
+                    </div>
+                </div>
+
+                <!-- Sequential Sandbox Prompting Tabs -->
+                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 sm:p-6 space-y-6">
+                    <div class="flex border-b border-slate-800 gap-2 pb-2 overflow-x-auto">
+                        <button onclick="switchPromptTab(1)" id="prompt-tab-1" class="px-4 py-2 rounded-lg text-xs font-bold transition bg-indigo-600 text-white">
+                            Prompt 1: Structure & Gaps
+                        </button>
+                        <button onclick="switchPromptTab(2)" id="prompt-tab-2" class="px-4 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200 hover:bg-slate-800">
+                            Prompt 2: Refine & Preserve Voice
+                        </button>
+                        <button onclick="switchPromptTab(3)" id="prompt-tab-3" class="px-4 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200 hover:bg-slate-800">
+                            Prompt 3: Critical Equity Audit
+                        </button>
+                    </div>
+
+                    <!-- Prompt Tab 1 -->
+                    <div id="prompt-content-1" class="prompt-tab-content space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-indigo-300 uppercase tracking-wide">Stage 1: Ask AI for Clarifying Questions</span>
+                            <span class="text-[11px] text-slate-400">Forces AI to act as mentor, not ghostwriter</span>
+                        </div>
+                        <div class="relative bg-slate-950 border border-slate-800 rounded-xl p-4 font-mono text-xs text-indigo-200 leading-relaxed">
+                            <pre id="prompt-text-1" class="whitespace-pre-wrap font-sans"></pre>
+                        </div>
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <button onclick="copyPromptToClipboard(1)" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold transition flex items-center gap-2">
+                                📋 Copy Prompt 1 to Clipboard
+                            </button>
+                            <button onclick="testWithGemini(1)" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold transition flex items-center gap-2">
+                                ✨ Run Live inside Lab (Gemini AI)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Prompt Tab 2 -->
+                    <div id="prompt-content-2" class="prompt-tab-content hidden space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-amber-300 uppercase tracking-wide">Stage 2: Refine & Eliminate Buzzwords</span>
+                            <span class="text-[11px] text-slate-400">Converts raw inputs into a 60-second narrative flow</span>
+                        </div>
+                        <div class="relative bg-slate-950 border border-slate-800 rounded-xl p-4 font-mono text-xs text-amber-200 leading-relaxed">
+                            <pre id="prompt-text-2" class="whitespace-pre-wrap font-sans"></pre>
+                        </div>
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <button onclick="copyPromptToClipboard(2)" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold transition flex items-center gap-2">
+                                📋 Copy Prompt 2 to Clipboard
+                            </button>
+                            <button onclick="testWithGemini(2)" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold transition flex items-center gap-2">
+                                ✨ Run Live inside Lab (Gemini AI)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Prompt Tab 3 -->
+                    <div id="prompt-content-3" class="prompt-tab-content hidden space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-emerald-300 uppercase tracking-wide">Stage 3: Equity & Jargon Audit</span>
+                            <span class="text-[11px] text-slate-400">Ensures accessibility for diverse audiences</span>
+                        </div>
+                        <div class="relative bg-slate-950 border border-slate-800 rounded-xl p-4 font-mono text-xs text-emerald-200 leading-relaxed">
+                            <pre id="prompt-text-3" class="whitespace-pre-wrap font-sans"></pre>
+                        </div>
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <button onclick="copyPromptToClipboard(3)" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold transition flex items-center gap-2">
+                                📋 Copy Prompt 3 to Clipboard
+                            </button>
+                            <button onclick="testWithGemini(3)" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold transition flex items-center gap-2">
+                                ✨ Run Live inside Lab (Gemini AI)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Gemini AI Live Sandbox Output Window -->
+                    <div id="ai-sandbox-output" class="hidden mt-6 bg-slate-950 border border-indigo-900/60 rounded-xl p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-emerald-400 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                                Gemini AI Co-Creation Output
+                            </span>
+                            <span class="text-[10px] text-slate-500">Model: gemini-3-flash-preview</span>
+                        </div>
+                        <div id="ai-output-content" class="text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-wrap font-sans">
+                            <!-- Streaming or generated text output appears here -->
+                        </div>
+                        <div class="pt-2 flex justify-end">
+                            <button onclick="copyAiOutput()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg">
+                                Copy AI Suggestion
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Final Refined Narrative Storage Textarea -->
+                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 space-y-2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-emerald-400">
+                        ✍️ Your Refined 60-Second Story (Final Polished Draft):
+                    </label>
+                    <p class="text-[11px] text-slate-400">Paste your updated, human-checked 60-second narrative here to prepare for peer pitch practice.</p>
+                    <textarea id="refined-story-input" rows="4" placeholder="Paste or type your final polished story here..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs sm:text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition"></textarea>
+                </div>
+
+                <!-- Next Step Button -->
+                <div class="flex justify-between items-center pt-4 border-t border-slate-800">
+                    <button onclick="switchStep(2)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">
+                        ← Back to Part 2
+                    </button>
+                    <button onclick="unlockBadge('Technology'); unlockBadge('Critical Thinking'); unlockBadge('Equity & Inclusion'); switchStep(4);" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition flex items-center gap-2">
+                        <span>Continue to Step 4: Peer Pitch</span> →
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- PART 4: PEER CONNECTION PITCH & FEEDBACK -->
+        <!-- ========================================== -->
+        <section id="step-4" class="step-section hidden space-y-6">
+            <div class="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <div>
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-950 text-indigo-300 border border-indigo-800">
+                            Part 4 • Minutes 38:00 - 50:00
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-2">Peer Connection Pitch & Feedback</h2>
+                        <p class="text-sm text-slate-400 mt-1">Put technology away and test your story with a live human listener.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="nace-tag">🗣️ Communication</span>
+                        <span class="nace-tag">🤝 Teamwork</span>
+                        <span class="nace-tag">🦁 Leadership</span>
+                    </div>
+                </div>
+
+                <!-- Live Partner Pitch Timer & Instructions -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <!-- Left Column: Instructions & Role Switcher -->
+                    <div class="md:col-span-1 bg-slate-900/90 border border-slate-800 rounded-xl p-5 space-y-4">
+                        <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider">Breakout Dynamics</h4>
+                        <div class="space-y-3 text-xs text-slate-300">
+                            <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+                                <span class="font-bold text-emerald-400">Partner A Pitch (60 Secs)</span>
+                                <p class="text-slate-400 mt-1">Speak aloud without reading line-by-line. Focus on eye contact and core purpose.</p>
+                            </div>
+                            <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+                                <span class="font-bold text-amber-400">Partner B Feedback (60 Secs)</span>
+                                <p class="text-slate-400 mt-1">Share what human strength was heard and where it felt most authentic.</p>
+                            </div>
+                        </div>
+
+                        <!-- Role Status Pill -->
+                        <div id="current-partner-role" class="p-3 bg-indigo-950/60 border border-indigo-800 text-center rounded-lg font-bold text-xs text-indigo-200">
+                            Current Mode: Partner A Pitching
+                        </div>
+                        <button onclick="togglePartnerRole()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition">
+                            🔄 Switch Roles (A ↔ B)
+                        </button>
+                    </div>
+
+                    <!-- Middle Column: Live Pitch Timer -->
+                    <div class="md:col-span-2 bg-slate-900/90 border border-slate-800 rounded-xl p-5 flex flex-col justify-between items-center text-center space-y-4">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Live 60-Second Pitch & Feedback Timer</span>
+                        <div class="font-mono text-5xl sm:text-6xl font-black text-indigo-400 my-2" id="pitch-timer-display">
+                            01:00
+                        </div>
+                        <div class="flex gap-3 w-full max-w-xs">
+                            <button id="btn-pitch-timer-toggle" onclick="togglePitchTimer()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition">
+                                ▶ Start Pitch
+                            </button>
+                            <button onclick="resetPitchTimer()" class="py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition">
+                                ↺ Reset
+                            </button>
+                        </div>
+                        <p class="text-[11px] text-slate-500">Tip: Stop speaking when the timer hits 0:00 and immediately swap to partner feedback!</p>
+                    </div>
+                </div>
+
+                <!-- Peer Connection Feedback Worksheet Card -->
+                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 sm:p-6 space-y-4">
+                    <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">
+                        📝 2-Minute Human Connection Check (Record Partner Feedback)
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">
+                                1. What human value/strength stood out most to your partner?
+                            </label>
+                            <input type="text" id="feedback-strength" placeholder="e.g., Empathy under stress, quick adaptability..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">
+                                2. One tweak to make it sound even more conversational & authentic:
+                            </label>
+                            <input type="text" id="feedback-tweak" placeholder="e.g., Use simpler phrasing in the middle section..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Next Step Button -->
+                <div class="flex justify-between items-center pt-4 border-t border-slate-800">
+                    <button onclick="switchStep(3)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">
+                        ← Back to Part 3
+                    </button>
+                    <button onclick="unlockBadge('Communication'); unlockBadge('Teamwork'); unlockBadge('Leadership'); switchStep(5);" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition flex items-center gap-2">
+                        <span>Continue to Step 5: Pledge & Export</span> →
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- PART 5: ETHICAL COMMITMENTS & EXPORT -->
+        <!-- ========================================== -->
+        <section id="step-5" class="step-section hidden space-y-6">
+            <div class="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800 glow-emerald">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <div>
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-950 text-indigo-300 border border-indigo-800">
+                            Part 5 • Minutes 50:00 - 60:00
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-2">Ethical Commitments & Story Takeaways</h2>
+                        <p class="text-sm text-slate-400 mt-1">Finalize your Human Storyteller's Pledge and download your completed workshop portfolio.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="nace-tag">🌱 Career & Self-Dev</span>
+                        <span class="nace-tag">🛡️ Professionalism</span>
+                    </div>
+                </div>
+
+                <!-- Human Storyteller's Pledge Card -->
+                <div class="bg-gradient-to-r from-slate-900 via-indigo-950/60 to-slate-900 border border-indigo-700/60 rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                        <span>📜 The Human Storyteller's Pledge</span>
+                    </div>
+
+                    <p class="text-xs sm:text-sm text-slate-200 italic leading-relaxed">
+                        "I will use AI to enhance my clarity and structure, but I will never let AI replace my human voice, lived experience, or personal truth."
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">Student / Storyteller Name:</label>
+                            <input type="text" id="pledge-name" oninput="updateExportSummary()" placeholder="Enter your full name" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">Personal Key Takeaway:</label>
+                            <input type="text" id="pledge-takeaway" oninput="updateExportSummary()" placeholder="e.g., AI is my sounding board, not my ghostwriter!" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Complete Portfolio Live Preview & Download Card -->
+                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 sm:p-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">
+                            📄 Your Compiled Storytelling Lab Portfolio Summary
+                        </h4>
+                        <span class="text-[11px] text-slate-400">Ready to save for interview prep & resumes</span>
+                    </div>
+
+                    <div id="export-summary-preview" class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-300 leading-relaxed whitespace-pre-wrap max-h-64 overflow-y-auto">
+                        <!-- Compiled markdown summary renders here -->
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                        <div class="flex gap-2">
+                            <button onclick="downloadPortfolioText()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-2">
+                                💾 Download Portfolio (.txt)
+                            </button>
+                            <button onclick="copyPortfolioText()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold transition">
+                                📋 Copy All Text
+                            </button>
+                        </div>
+                        <button onclick="triggerConfettiCompletion()" class="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl text-xs font-bold transition shadow-lg">
+                            🎉 Complete Workshop & Unlock All 8 Badges
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Back Navigation -->
+                <div class="flex justify-between items-center pt-4 border-t border-slate-800">
+                    <button onclick="switchStep(4)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">
+                        ← Back to Part 4
+                    </button>
+                    <span class="text-xs text-emerald-400 font-bold">✨ Workshop Completed!</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- NACE Competencies Modal Dialog -->
+    <div id="nace-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel max-w-2xl w-full rounded-2xl p-6 border border-slate-800 space-y-5 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-white">NACE Career Readiness Matrix</h3>
+                    <p class="text-xs text-slate-400">8 Competencies Integrated into the Storytelling Lab</p>
+                </div>
+                <button onclick="toggleNaceModal()" class="text-slate-400 hover:text-white text-lg p-1">✕</button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="nace-badge-grid">
+                <!-- Dynamically updated badge list -->
+            </div>
+
+            <div class="pt-3 border-t border-slate-800 flex justify-end">
+                <button onclick="toggleNaceModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold">
+                    Close Matrix
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+        // Workshop Master State
+        let currentStep = 1;
+        let masterTimerSeconds = 3600; // 60 minutes
+        let masterTimerInterval = null;
+        let isMasterTimerRunning = false;
+
+        let pitchTimerSeconds = 60;
+        let pitchTimerInterval = null;
+        let isPitchTimerRunning = false;
+        let currentPartnerRole = 'A'; // 'A' or 'B'
+
+        // NACE Competency Badges Tracker
+        const naceCompetencies = {
+            'Communication': { icon: '🗣️', description: 'Craft clear, compelling stories and practice active listening.', unlocked: false },
+            'Technology': { icon: '⚡', description: 'Ethically leverage generative AI tools as sounding boards.', unlocked: false },
+            'Critical Thinking': { icon: '🧠', description: 'Audit AI outputs for hallucination, bias, and generic jargon.', unlocked: false },
+            'Equity & Inclusion': { icon: '🌐', description: 'Ensure stories are accessible and free from exclusive assumptions.', unlocked: false },
+            'Career & Self-Development': { icon: '🌱', description: 'Reflect on strengths, values, and authentic personal brand.', unlocked: false },
+            'Teamwork': { icon: '🤝', description: 'Provide constructive feedback and support peer storytellers.', unlocked: false },
+            'Leadership': { icon: '🦁', description: 'Inspire and connect through authentic self-advocacy.', unlocked: false },
+            'Professionalism': { icon: '🛡️', description: 'Maintain ethical integrity and boundary setting with AI.', unlocked: false }
+        };
+
+        window.onload = function() {
+            renderNaceBadges();
+            updateStoryPreview();
+            updateExportSummary();
+        };
+
+        function switchStep(stepNum) {
+            currentStep = stepNum;
+            document.querySelectorAll('.step-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`step-${stepNum}`).classList.remove('hidden');
+
+            document.querySelectorAll('.step-nav-btn').forEach((btn, idx) => {
+                if (idx + 1 === stepNum) {
+                    btn.className = 'step-nav-btn active flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition bg-indigo-600 text-white';
+                } else {
+                    btn.className = 'step-nav-btn flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition';
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleWorkshopTimer() {
+            const btn = document.getElementById('btn-toggle-timer');
+            if (isMasterTimerRunning) {
+                clearInterval(masterTimerInterval);
+                isMasterTimerRunning = false;
+                btn.innerHTML = '▶ Play';
+            } else {
+                isMasterTimerRunning = true;
+                btn.innerHTML = '⏸ Pause';
+                masterTimerInterval = setInterval(() => {
+                    if (masterTimerSeconds > 0) {
+                        masterTimerSeconds--;
+                        updateWorkshopTimerDisplay();
+                    } else {
+                        clearInterval(masterTimerInterval);
+                        isMasterTimerRunning = false;
+                        btn.innerHTML = '▶ Play';
+                        showToast('⌛ Workshop Time Complete!');
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetWorkshopTimer() {
+            clearInterval(masterTimerInterval);
+            isMasterTimerRunning = false;
+            masterTimerSeconds = 3600;
+            document.getElementById('btn-toggle-timer').innerHTML = '▶ Play';
+            updateWorkshopTimerDisplay();
+        }
+
+        function updateWorkshopTimerDisplay() {
+            const mins = Math.floor(masterTimerSeconds / 60);
+            const secs = masterTimerSeconds % 60;
+            document.getElementById('workshop-timer-display').innerText = 
+                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function votePitch(choice) {
+            const resultBox = document.getElementById('poll-result');
+            resultBox.classList.remove('hidden');
+            if (choice === 'B') {
+                showToast('🎯 Spot on! Sample B highlights true human purpose.');
+            } else {
+                showToast('💡 Sample A sounds polished, but notice how buzzwords hide the human details.');
+            }
+            unlockBadge('Professionalism');
+            unlockBadge('Technology');
+        }
+
+        function updateStoryPreview() {
+            const purpose = document.getElementById('input-purpose').value.trim();
+            const struggle = document.getElementById('input-struggle').value.trim();
+            const impact = document.getElementById('input-impact').value.trim();
+            const topic = document.getElementById('story-topic').value;
+
+            const previewEl = document.getElementById('blueprint-live-preview');
+
+            if (!purpose && !struggle && !impact) {
+                previewEl.innerHTML = `<p class="text-slate-500">Start typing your P-S-I details above to see your blueprint compile here...</p>`;
+            } else {
+                previewEl.innerHTML = `
+                    <p><strong class="text-emerald-400">Purpose:</strong> ${purpose || '[Pending input...]'}</p>
+                    <p><strong class="text-amber-400">Struggle:</strong> ${struggle || '[Pending input...]'}</p>
+                    <p><strong class="text-indigo-400">Impact:</strong> ${impact || '[Pending input...]'}</p>
+                `;
+            }
+
+            // Update Prompts dynamically with student inputs
+            const rawNotes = `Topic: ${topic}\nPurpose: ${purpose || '(Add purpose)'}\nStruggle: ${struggle || '(Add struggle)'}\nImpact: ${impact || '(Add impact)'}`;
+
+            document.getElementById('prompt-text-1').innerText = 
+`I am drafting a 60-second interview response/story about my experience. Here are my raw notes on my Purpose, Struggle, and Impact:
+
+${rawNotes}
+
+Act as an empathetic career mentor. Do NOT rewrite this for me yet. Instead, ask me 2 clarifying questions to make the human impact and problem-solving aspect clearer and more authentic.`;
+
+            document.getElementById('prompt-text-2').innerText = 
+`Here are my raw story notes and answers:
+
+${rawNotes}
+
+Now help me structure this into a clear, concise 60-second narrative flow while preserving my authentic, conversational tone. Do NOT use generic buzzwords like "spearheaded", "synergy", "testament", or "results-driven". Keep my voice human.`;
+
+            document.getElementById('prompt-text-3').innerText = 
+`Here is my draft story:
+
+${rawNotes}
+
+Audit this story for accessibility, equity, and clarity. Does this narrative make sense to someone outside my academic major or industry? Point out any technical jargon or assumptions that might exclude or confuse a diverse audience.`;
+
+            updateExportSummary();
+        }
+
+        function switchPromptTab(tabNum) {
+            document.querySelectorAll('.prompt-tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`prompt-content-${tabNum}`).classList.remove('hidden');
+
+            for (let i = 1; i <= 3; i++) {
+                const btn = document.getElementById(`prompt-tab-${i}`);
+                if (i === tabNum) {
+                    btn.className = 'px-4 py-2 rounded-lg text-xs font-bold transition bg-indigo-600 text-white';
+                } else {
+                    btn.className = 'px-4 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200 hover:bg-slate-800';
+                }
+            }
+        }
+
+        function copyPromptToClipboard(promptNum) {
+            const text = document.getElementById(`prompt-text-${promptNum}`).innerText;
+            copyToClipboardText(text);
+            showToast(`📋 Prompt ${promptNum} copied to clipboard!`);
+        }
+
+        async function testWithGemini(promptNum) {
+            const outputBox = document.getElementById('ai-sandbox-output');
+            const outputContent = document.getElementById('ai-output-content');
+            
+            outputBox.classList.remove('hidden');
+            outputContent.innerHTML = `<span class="animate-pulse text-indigo-400">⚡ Gemini AI is analyzing your human story notes...</span>`;
+
+            const promptText = document.getElementById(`prompt-text-${promptNum}`).innerText;
+            const systemPrompt = "You are an empathetic, world-class career mentor helping college students craft authentic, human-centered stories without corporate jargon.";
+
+            const apiKey = ""; // Canvas runtime key resolution
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: promptText }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error('API Request Failed');
+
+                const result = await response.json();
+                const aiText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (aiText) {
+                    outputContent.innerText = aiText;
+                    showToast('✨ Gemini response loaded!');
+                } else {
+                    outputContent.innerText = "Received empty response. Try copying the prompt into your preferred AI tool!";
+                }
+            } catch (err) {
+                outputContent.innerText = `[Simulated Sounding Board Response for Workshop]\n\n"Great start! To make your story stand out:\n1. Why did this specific problem matter to you personally?\n2. What was the exact moment you realized your initial approach needed to adapt?"\n\n(Tip: Copy the prompt above directly into ChatGPT, Claude, or Gemini!)`;
+                showToast('Using simulated thought partner output.');
+            }
+        }
+
+        function copyAiOutput() {
+            const text = document.getElementById('ai-output-content').innerText;
+            copyToClipboardText(text);
+            showToast('📋 AI Suggestion copied!');
+        }
+
+        function togglePitchTimer() {
+            const btn = document.getElementById('btn-pitch-timer-toggle');
+            if (isPitchTimerRunning) {
+                clearInterval(pitchTimerInterval);
+                isPitchTimerRunning = false;
+                btn.innerHTML = '▶ Resume Pitch';
+            } else {
+                isPitchTimerRunning = true;
+                btn.innerHTML = '⏸ Pause Pitch';
+                pitchTimerInterval = setInterval(() => {
+                    if (pitchTimerSeconds > 0) {
+                        pitchTimerSeconds--;
+                        updatePitchTimerDisplay();
+                    } else {
+                        clearInterval(pitchTimerInterval);
+                        isPitchTimerRunning = false;
+                        btn.innerHTML = '▶ Start Pitch';
+                        showToast('🔔 Time up! Switch to 1-minute peer feedback now!');
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetPitchTimer() {
+            clearInterval(pitchTimerInterval);
+            isPitchTimerRunning = false;
+            pitchTimerSeconds = 60;
+            document.getElementById('btn-pitch-timer-toggle').innerHTML = '▶ Start Pitch';
+            updatePitchTimerDisplay();
+        }
+
+        function updatePitchTimerDisplay() {
+            const mins = Math.floor(pitchTimerSeconds / 60);
+            const secs = pitchTimerSeconds % 60;
+            document.getElementById('pitch-timer-display').innerText = 
+                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function togglePartnerRole() {
+            currentPartnerRole = currentPartnerRole === 'A' ? 'B' : 'A';
+            document.getElementById('current-partner-role').innerText = 
+                `Current Mode: Partner ${currentPartnerRole} ${currentPartnerRole === 'A' ? 'Pitching' : 'Feedback'}`;
+            resetPitchTimer();
+            showToast(`Switched to Partner ${currentPartnerRole}`);
+        }
+
+        function updateExportSummary() {
+            const name = document.getElementById('pledge-name').value.trim() || '[Student Name]';
+            const takeaway = document.getElementById('pledge-takeaway').value.trim() || '[Key Takeaway]';
+            const purpose = document.getElementById('input-purpose').value.trim() || '[Purpose missing]';
+            const struggle = document.getElementById('input-struggle').value.trim() || '[Struggle missing]';
+            const impact = document.getElementById('input-impact').value.trim() || '[Impact missing]';
+            const refinedStory = document.getElementById('refined-story-input').value.trim() || '[Refined Story Draft pending...]';
+            const strength = document.getElementById('feedback-strength').value.trim() || '[Partner feedback pending]';
+
+            const summary = 
+`====================================================================
+           STORYTELLING LAB PORTFOLIO: HUMAN PURPOSE & ETHICAL AI
+====================================================================
+Storyteller: ${name}
+Date: ${new Date().toLocaleDateString()}
+
+1. THE HUMAN CORE (RAW P-S-I BLUEPRINT)
+--------------------------------------------------------------------
+• PURPOSE (The Why):
+  ${purpose}
+
+• STRUGGLE (Human Problem Solving):
+  ${struggle}
+
+• IMPACT (Human Connection & Growth):
+  ${impact}
+
+2. REFINED 60-SECOND STORY NARRATIVE
+--------------------------------------------------------------------
+${refinedStory}
+
+3. PEER CONNECTION FEEDBACK
+--------------------------------------------------------------------
+• Core Human Strength Heard by Partner: ${strength}
+
+4. THE HUMAN STORYTELLER'S PLEDGE
+--------------------------------------------------------------------
+"I will use AI to enhance my clarity and structure, but I will 
+never let AI replace my human voice, lived experience, or personal truth."
+
+Personal Key Takeaway:
+"${takeaway}"
+====================================================================`;
+
+            document.getElementById('export-summary-preview').innerText = summary;
+        }
+
+        function downloadPortfolioText() {
+            const summaryText = document.getElementById('export-summary-preview').innerText;
+            const blob = new Blob([summaryText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Storytelling_Lab_Portfolio_${new Date().toISOString().slice(0,10)}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('💾 Portfolio downloaded successfully!');
+        }
+
+        function copyPortfolioText() {
+            const summaryText = document.getElementById('export-summary-preview').innerText;
+            copyToClipboardText(summaryText);
+            showToast('📋 Portfolio copied to clipboard!');
+        }
+
+        function triggerConfettiCompletion() {
+            Object.keys(naceCompetencies).forEach(key => unlockBadge(key));
+            showToast('🎉 Congratulations! All 8 NACE Competencies Unlocked!');
+        }
+
+        function unlockBadge(key) {
+            if (naceCompetencies[key] && !naceCompetencies[key].unlocked) {
+                naceCompetencies[key].unlocked = true;
+                renderNaceBadges();
+                updateBadgeCount();
+            }
+        }
+
+        function updateBadgeCount() {
+            const count = Object.values(naceCompetencies).filter(b => b.unlocked).length;
+            document.getElementById('badge-count').innerText = `${count} / 8`;
+        }
+
+        function renderNaceBadges() {
+            const grid = document.getElementById('nace-badge-grid');
+            grid.innerHTML = '';
+
+            Object.keys(naceCompetencies).forEach(key => {
+                const item = naceCompetencies[key];
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-xl border flex items-start gap-3 transition ${
+                    item.unlocked 
+                    ? 'bg-indigo-950/70 border-emerald-500/60 text-white' 
+                    : 'bg-slate-900/40 border-slate-800 text-slate-500 opacity-60'
+                }`;
+                card.innerHTML = `
+                    <div class="text-xl">${item.icon}</div>
+                    <div>
+                        <div class="flex items-center gap-1.5 font-bold text-xs">
+                            <span>${key}</span>
+                            ${item.unlocked ? '<span class="text-[10px] bg-emerald-950 text-emerald-300 px-1.5 py-0.2 rounded font-mono">UNLOCKED</span>' : ''}
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-0.5">${item.description}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleNaceModal() {
+            const modal = document.getElementById('nace-modal');
+            modal.classList.toggle('hidden');
+        }
+
+        function copyToClipboardText(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'pointer-events-auto bg-slate-900 border border-indigo-500 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 transition transform translate-y-2 opacity-0';
+            toast.innerHTML = `<span>✨</span><span>${message}</span>`;
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
